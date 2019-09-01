@@ -1,3 +1,6 @@
+static WIDTH: u32 = 800;
+static HEIGHT: u32 = 600;
+
 extern crate gl;
 extern crate cgmath;
 mod macros;
@@ -5,8 +8,9 @@ mod game;
 mod shader;
 mod sprite;
 mod texture;
-mod game_logic;
+mod game_object;
 
 fn main() {
-    let game = game::Game::init(800, 600);
+    let mut game = game::Game::new();
+    game.run();
 }
