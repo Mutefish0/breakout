@@ -23,9 +23,9 @@ impl Shader {
         let mut shader = Shader { ID: 0 };
         // 1. retrieve the vertex/fragment source code from filesystem
         let mut vShaderFile = File::open(vertexPath)
-            .unwrap_or_else(|_| panic!("Failed to open {}", vertexPath));
+            .unwrap_or_else(|e| panic!("Failed to open {}: {}", vertexPath, e));
         let mut fShaderFile = File::open(fragmentPath)
-            .unwrap_or_else(|_| panic!("Failed to open {}", fragmentPath));
+            .unwrap_or_else(|e| panic!("Failed to open {}: {}", fragmentPath, e));
         let mut vertexCode = String::new();
         let mut fragmentCode = String::new();
         vShaderFile

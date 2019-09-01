@@ -2,13 +2,14 @@ extern crate image;
 use image::GenericImage;
 use std::path::Path;
 use std::os::raw::c_void;
+use std::ffi::OsStr;
 
 pub struct Texture {
-  id: u32
+  pub id: u32
 }
 
 impl Texture {
-  fn new(src: &str) -> Texture {
+  pub fn new(src: &str) -> Texture {
     let mut id = 0;
     unsafe {
       gl::GenTextures(1, &mut id);
@@ -20,15 +21,22 @@ impl Texture {
       gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MIN_FILTER, gl::LINEAR as i32);
       gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_MAG_FILTER, gl::LINEAR as i32);
       // load image, create texture and generate mipmaps
-      let img = image::open(&Path::new(src)).expect("Failed to load texture");
+      let path = Path::new(src);
+      let format = if path.extension() == Some(OsStr::new("png")) { gl::RGBA } else { gl::RGB };
+      let img = image::open(path).expect("Failed to load texture");
       let data = img.raw_pixels();
+
+      println!("width: {}, height: {}", img.width(), img.height());
+      let offset = 4 * (512 * 20 + 20);
+      println!("pix1: {}, {}, {}, {}", data[offset + 0], data[offset + 1], data[offset + 2], data[offset + 3]);
+
       gl::TexImage2D(gl::TEXTURE_2D,
                       0,
-                      gl::RGB as i32,
+                      format as i32,
                       img.width() as i32,
                       img.height() as i32,
                       0,
-                      gl::RGB,
+                      format,
                       gl::UNSIGNED_BYTE,
                       &data[0] as *const u8 as *const c_void);
       gl::GenerateMipmap(gl::TEXTURE_2D);
@@ -37,9 +45,11 @@ impl Texture {
     Texture { id }
   }
 
-  fn bind(&self) {
+  pub fn bind(&self) {
     unsafe {
+      gl::ActiveTexture(gl::TEXTURE0);
       gl::BindTexture(gl::TEXTURE_2D, self.id);
     }
   }
+
 }
