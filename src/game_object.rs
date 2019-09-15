@@ -1,7 +1,6 @@
 use cgmath::{ Vector2, Vector3, vec2, vec3 };
 use crate::texture::Texture;
 use crate::{WIDTH, HEIGHT};
-use std::hash::{Hash, Hasher};
 
 pub struct GameObject {
   pub position: Vector2<f32>,
@@ -38,7 +37,7 @@ impl Ball {
     Ball {
       is_stuck: true,
       radius: 12.5,
-      velocity: vec2(100.0, -350.0),
+      velocity: vec2(150.0, -500.0),
       game_object: GameObject::new("src/res/face.png", position, vec2(25.0, 25.0), vec3(1.0, 1.0, 1.0))
     }
   }
@@ -56,14 +55,6 @@ pub struct Brick {
 impl PartialEq for Brick {
   fn eq(&self, other: &Self) -> bool {
     self.id == other.id
-  }
-}
-
-impl Eq for Brick {}
-
-impl Hash for Brick {
-  fn hash<H: Hasher>(&self, state: &mut H) {
-    self.id.hash(state);
   }
 }
 
